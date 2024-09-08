@@ -16,7 +16,8 @@
     }
   },
   "scripts": {
-    "build": "rollup --config"
+    "build": "rollup --config",
+    "format": "biome format"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
