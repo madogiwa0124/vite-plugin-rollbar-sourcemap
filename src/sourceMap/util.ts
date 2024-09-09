@@ -20,12 +20,40 @@ export const calcSourcePath = ({
   sourceMapFile: string;
   outputDir: string;
 }): string | null => {
-  const sourcePath = sourceMapFile.replace(/\.map$/, "");
-  const sourceFilename = resolve(outputDir, sourcePath);
-  if (!existsSync(sourceFilename)) return null;
+  const sourceFile = sourceMapFile.replace(/\.map$/, "");
+  const sourcePath = resolve(outputDir, sourceFile);
+  if (!existsSync(sourcePath)) return null;
   return sourcePath;
 };
 
 export const readSourceMapFile = (sourceMapPath: string): string => {
   return readFileSync(sourceMapPath, "utf8");
 };
+
+if (import.meta.vitest) {
+  const { describe, it, expect } = import.meta.vitest;
+
+  describe("collectSourceMapFiles", () => {
+    it("should collect source map files", async () => {
+      const result = await collectSourceMapFiles("**/*.map", "test/sample");
+      expect(result).toEqual(["foo.js.map", "bar.js.map"]);
+    });
+  });
+
+  describe("resolveSourceMap", () => {
+    it("should resolve source map file path", () => {
+      const result = resolveSourceMap("test/sample", "foo.js.map");
+      expect(result).toBe(resolve("test/sample/foo.js.map"));
+    });
+  });
+
+  describe("calcSourcePath", () => {
+    it("should calculate source path", () => {
+      const result = calcSourcePath({
+        sourceMapFile: "foo.js.map",
+        outputDir: "test/sample",
+      });
+      expect(result).toBe(resolve("test/sample/foo.js"));
+    });
+  });
+}
