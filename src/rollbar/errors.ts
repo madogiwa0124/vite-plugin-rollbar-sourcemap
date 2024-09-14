@@ -1,15 +1,15 @@
-export class FaildUploadError extends Error {
+export class FailedUploadError extends Error {
   constructor(message: string, filename: string) {
     super(message);
-    this.message = `Failed to upload ${filename} to Rollbar: ${message}`;
+    this.message = `Failed to upload ${filename} to Rollbar: ${message}.`;
     this.name = "FailedUploadError";
   }
 }
 
-export class FaildPostError extends Error {
-  constructor(statusText: string) {
-    super();
-    this.message = `Failed to pots sourcemap to Rollbar: ${statusText}`;
+export class FailedPostError extends Error {
+  constructor(message: string, statusText: string) {
+    super(message);
+    this.message = `Failed to post sourcemap to Rollbar with ${statusText}: ${message}.`;
     this.name = "FaildPostError";
   }
 }
