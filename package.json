@@ -17,6 +17,8 @@
   },
   "scripts": {
     "build": "rollup --config",
+    "lint": "biome check",
+    "typecheck": "tsc --noEmit",
     "format": "biome format --write",
     "test": "vitest"
   },
