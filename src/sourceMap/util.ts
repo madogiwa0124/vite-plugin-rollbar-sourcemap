@@ -4,15 +4,12 @@ import { existsSync, readFileSync } from "node:fs";
 
 export const collectSourceMapFiles = async (
   souceMapGlob: string,
-  outputDir: string
+  outputDir: string,
 ): Promise<string[]> => {
   return await glob(souceMapGlob, { cwd: outputDir });
 };
 
-export const resolveSourceMapFile = (
-  outputDir: string,
-  sourceMapFile: string
-): string => {
+export const resolveSourceMapFile = (outputDir: string, sourceMapFile: string): string => {
   return resolve(outputDir, sourceMapFile);
 };
 
