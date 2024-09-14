@@ -9,7 +9,7 @@ export const collectSourceMapFiles = async (
   return await glob(souceMapGlob, { cwd: outputDir });
 };
 
-export const resolveSourceMap = (outputDir: string, sourceMapFile: string): string => {
+export const resolveSourceMapFile = (outputDir: string, sourceMapFile: string): string => {
   return resolve(outputDir, sourceMapFile);
 };
 
@@ -42,7 +42,7 @@ if (import.meta.vitest) {
 
   describe("resolveSourceMap", () => {
     it("should resolve source map file path", () => {
-      const result = resolveSourceMap("test/sample", "foo.js.map");
+      const result = resolveSourceMapFile("test/sample", "foo.js.map");
       expect(result).toBe(resolve("test/sample/foo.js.map"));
     });
   });

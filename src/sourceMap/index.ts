@@ -1,5 +1,10 @@
 import { loggedNoSourceFound, loggedReadErrorSourceMap } from "./logger";
-import { calcSourceFile, collectSourceMapFiles, readSourceMapFile, resolveSourceMap } from "./util";
+import {
+  calcSourceFile,
+  collectSourceMapFiles,
+  readSourceMapFile,
+  resolveSourceMapFile,
+} from "./util";
 
 export type SourceMapping = {
   sourceMapContent: string;
@@ -18,7 +23,7 @@ export const collectSourceMappings = async (
     const sourcePath = calcSourceFile({ sourceMapFile, outputDir });
     if (sourcePath === null) return loggedNoSourceFound(sourceMapFile);
 
-    const sourceMapFilePath = resolveSourceMap(outputDir, sourceMapFile);
+    const sourceMapFilePath = resolveSourceMapFile(outputDir, sourceMapFile);
     return buildSourceMapping({ base, sourcePath, sourceMapFilePath });
   });
   return sourceMappings.filter((mapping) => mapping !== null);
