@@ -13,7 +13,7 @@ export const resolveSourceMap = (outputDir: string, sourceMapFile: string): stri
   return resolve(outputDir, sourceMapFile);
 };
 
-export const calcSourcePath = ({
+export const calcSourceFile = ({
   sourceMapFile,
   outputDir,
 }: {
@@ -23,7 +23,7 @@ export const calcSourcePath = ({
   const sourceFile = sourceMapFile.replace(/\.map$/, "");
   const sourcePath = resolve(outputDir, sourceFile);
   if (!existsSync(sourcePath)) return null;
-  return sourcePath;
+  return sourceFile;
 };
 
 export const readSourceMapFile = (sourceMapPath: string): string => {
@@ -49,7 +49,7 @@ if (import.meta.vitest) {
 
   describe("calcSourcePath", () => {
     it("should calculate source path", () => {
-      const result = calcSourcePath({
+      const result = calcSourceFile({
         sourceMapFile: "foo.js.map",
         outputDir: "test/sample",
       });

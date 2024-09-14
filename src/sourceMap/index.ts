@@ -1,5 +1,5 @@
 import { loggedNoSourceFound, loggedReadErrorSourceMap } from "./logger";
-import { calcSourcePath, collectSourceMapFiles, readSourceMapFile, resolveSourceMap } from "./util";
+import { calcSourceFile, collectSourceMapFiles, readSourceMapFile, resolveSourceMap } from "./util";
 
 export type SourceMapping = {
   sourceMapContent: string;
@@ -15,7 +15,7 @@ export const collectSourceMappings = async (
 ): Promise<SourceMapping[]> => {
   const sourceMapFiles = await collectSourceMapFiles(sourceMapGlob, outputDir);
   const sourceMappings = sourceMapFiles.map((sourceMapFile) => {
-    const sourcePath = calcSourcePath({ sourceMapFile, outputDir });
+    const sourcePath = calcSourceFile({ sourceMapFile, outputDir });
     if (sourcePath === null) return loggedNoSourceFound(sourceMapFile);
 
     const sourceMapFilePath = resolveSourceMap(outputDir, sourceMapFile);
