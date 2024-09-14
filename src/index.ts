@@ -1,6 +1,6 @@
 import type { Plugin } from "vite";
-import { collectSourceMappings } from "./sourceMap";
 import { uploadAllSourceMaps } from "./rollbar/client";
+import { collectSourceMappings } from "./sourceMap";
 
 type RollbarSourcemapsOptions = {
   accessToken: string;

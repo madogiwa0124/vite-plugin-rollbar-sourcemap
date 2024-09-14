@@ -1,6 +1,6 @@
-import { glob } from "glob";
-import { resolve } from "node:path";
 import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { glob } from "glob";
 
 export const collectSourceMapFiles = async (
   souceMapGlob: string,

@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { uploadAllSourceMaps } from "../../src/rollbar/client";
-import * as service from "../../src/rollbar/service";
-import * as logger from "../../src/rollbar/logger";
 import { FailedUploadError } from "../../src/rollbar/errors";
+import * as logger from "../../src/rollbar/logger";
+import * as service from "../../src/rollbar/service";
 
 const mockPostRollbarSourcemap = ({ ok }: { ok: boolean }) => {
   const status = ok ? { status: 200, statusText: "OK" } : { status: 500, statusText: "Error" };

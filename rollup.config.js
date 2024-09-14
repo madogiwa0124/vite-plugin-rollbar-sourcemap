@@ -1,6 +1,6 @@
-import autoExternal from "rollup-plugin-auto-external";
-import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
+import typescript from "@rollup/plugin-typescript";
+import autoExternal from "rollup-plugin-auto-external";
 import { dts } from "rollup-plugin-dts";
 
 export default [
