@@ -1,6 +1,8 @@
 import type { Plugin } from "vite";
+import { buildLogger } from "./logger";
 import { uploadAllSourceMaps } from "./rollbar/client";
 import { collectSourceMappings } from "./sourceMap";
+import { state } from "./state";
 
 type RollbarSourcemapsOptions = {
   accessToken: string;
@@ -24,16 +26,10 @@ export default function vitePluginRollbarSourceMap({
   return {
     name: "vite-plugin-rollbar-sourcemap",
     async writeBundle() {
+      state.logger = buildLogger(silent, ignoreUploadErrors);
       const sourceMappings = await collectSourceMappings(base, outputDir);
       if (!sourceMappings.length) return;
-      await uploadAllSourceMaps(
-        sourceMappings,
-        accessToken,
-        version,
-        baseUrl,
-        silent,
-        ignoreUploadErrors,
-      );
+      await uploadAllSourceMaps(sourceMappings, accessToken, version, baseUrl);
     },
   };
 }

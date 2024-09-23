@@ -1,6 +1,6 @@
 import type { SourceMapping } from "../sourceMap";
+import { state } from "../state";
 import { FailedPostError, FailedUploadError } from "./errors";
-import { loggedFaildUpload, loggedUploadSuccess } from "./logger";
 import { postRollbarSourcemap } from "./service";
 
 export const uploadAllSourceMaps = async (
@@ -8,8 +8,6 @@ export const uploadAllSourceMaps = async (
   accessToken: string,
   version: string,
   baseUrl: string,
-  silent: boolean,
-  ignoreUploadErrors: boolean,
 ): Promise<void> => {
   try {
     await Promise.all(
@@ -23,24 +21,19 @@ export const uploadAllSourceMaps = async (
           sourceMapContent,
           sourceMapFilePath,
         });
-        return uploadSourcemap(form, originalFileUrl, silent);
+        return uploadSourcemap(form, originalFileUrl);
       }),
     );
   } catch (error: unknown) {
-    if (ignoreUploadErrors) return loggedFaildUpload(error as Error);
-    throw error;
+    state.logger.error(`Failed to upload sourcemap: ${error}.`, error as Error);
   }
 };
 
-const uploadSourcemap = async (
-  form: FormData,
-  fileName: string,
-  silent: boolean,
-): Promise<void> => {
+const uploadSourcemap = async (form: FormData, fileName: string): Promise<void> => {
   try {
     const res = await postRollbarSourcemap(form);
     if (!res.ok) throw new FailedPostError(await res.text(), res.statusText);
-    if (!silent) loggedUploadSuccess(fileName);
+    state.logger.info(`Uploaded ${fileName} to Rollbar.`);
   } catch (error: unknown) {
     throw new FailedUploadError((error as Error).message, fileName);
   }

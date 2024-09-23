@@ -1,6 +1,8 @@
 import { resolve } from "node:path";
 import { collectSourceMappings } from "../../src/sourceMap";
 import * as util from "../../src/sourceMap/util";
+import { state } from "../../src/state";
+import { MockLogger } from "../util";
 
 describe("collectSourceMappings", () => {
   it("should collect source mappings", async () => {
@@ -22,10 +24,10 @@ describe("collectSourceMappings", () => {
 
   it("should log no source found", async () => {
     vi.spyOn(util, "calcSourceFile").mockReturnValue(null);
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    state.logger = new MockLogger(false, false);
     const result = await collectSourceMappings("https://example.com/", "test/sample/");
-    expect(console.error).toBeCalledWith("No source found for 'foo.js.map'.");
-    expect(console.error).toBeCalledWith("No source found for 'bar.js.map'.");
+    expect(state.logger.error).toBeCalledWith("No source found for 'foo.js.map'.");
+    expect(state.logger.error).toBeCalledWith("No source found for 'bar.js.map'.");
     expect(result).toEqual([]);
     vi.resetAllMocks();
   });
@@ -34,12 +36,12 @@ describe("collectSourceMappings", () => {
     vi.spyOn(util, "readSourceMapFile").mockImplementation(() => {
       throw new Error("Test error");
     });
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    state.logger = new MockLogger(false, false);
     const result = await collectSourceMappings("https://example.com/", "test/sample");
-    expect(console.error).toBeCalledWith(
+    expect(state.logger.error).toBeCalledWith(
       `Error reading sourcemap file: ${resolve("test/sample/foo.js.map")}`,
     );
-    expect(console.error).toBeCalledWith(
+    expect(state.logger.error).toBeCalledWith(
       `Error reading sourcemap file: ${resolve("test/sample/bar.js.map")}`,
     );
     expect(result).toEqual([]);

@@ -1,4 +1,4 @@
-import { loggedNoSourceFound, loggedReadErrorSourceMap } from "./logger";
+import { state } from "../state";
 import {
   calcSourceFile,
   collectSourceMapFiles,
@@ -21,7 +21,7 @@ export const collectSourceMappings = async (
   const sourceMapFiles = await collectSourceMapFiles(sourceMapGlob, outputDir);
   const sourceMappings = sourceMapFiles.map((sourceMapFile) => {
     const sourcePath = calcSourceFile({ sourceMapFile, outputDir });
-    if (sourcePath === null) return loggedNoSourceFound(sourceMapFile);
+    if (sourcePath === null) return state.logger.error(`No source found for '${sourceMapFile}'.`);
 
     const sourceMapFilePath = resolveSourceMapFile(outputDir, sourceMapFile);
     return buildSourceMapping({ base, sourcePath, sourceMapFilePath });
@@ -33,19 +33,17 @@ const buildSourceMapping = ({
   base,
   sourcePath,
   sourceMapFilePath,
-  ignoreErrorLogging = false,
 }: {
   base: string;
   sourcePath: string;
   sourceMapFilePath: string;
-  ignoreErrorLogging?: boolean;
 }): SourceMapping | null => {
   const originalFileUrl = `${base}${sourcePath}`;
   try {
     const sourceMapContent = readSourceMapFile(sourceMapFilePath);
     return { sourceMapContent, sourceMapFilePath, originalFileUrl };
   } catch (_error) {
-    if (!ignoreErrorLogging) loggedReadErrorSourceMap(sourceMapFilePath);
+    state.logger.error(`Error reading sourcemap file: ${sourceMapFilePath}`);
     return null;
   }
 };
