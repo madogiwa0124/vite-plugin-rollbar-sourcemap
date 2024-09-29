@@ -4,7 +4,7 @@ import { uploadAllSourceMaps } from "./rollbar/client";
 import { collectSourceMappings } from "./sourceMap";
 import { setLogger } from "./state";
 
-type RollbarSourcemapsOptions = {
+export type RollbarSourcemapsOptions = {
   accessToken: string;
   version: string;
   baseUrl: string;
