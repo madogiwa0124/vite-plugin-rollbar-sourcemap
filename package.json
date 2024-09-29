@@ -19,7 +19,7 @@
     "build": "rollup --config",
     "lint": "biome check",
     "typecheck": "tsc --noEmit",
-    "format": "biome format --write",
+    "format": "biome format --write && biome check --write",
     "test": "vitest"
   },
   "devDependencies": {

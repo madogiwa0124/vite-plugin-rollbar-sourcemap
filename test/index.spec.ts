@@ -1,9 +1,9 @@
+import type { Plugin } from "vite";
+import vitePluginRollbarSourceMap, { type RollbarSourcemapsOptions } from "../src";
 import * as logger from "../src/logger";
 import * as client from "../src/rollbar/client";
 import * as sourceMap from "../src/sourceMap";
-import vitePluginRollbarSourceMap, { type RollbarSourcemapsOptions } from "../src";
 import type { SourceMapping } from "../src/sourceMap";
-import type { Plugin } from "vite";
 
 const mockSouceMappings: SourceMapping[] = [
   {
