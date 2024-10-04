@@ -13,7 +13,7 @@ This plugin is inspired by [clinggroup/vite-plugin-rollbar](https://github.com/c
 ## Installation
 
 ```sh
-npm install -D madogiwa0124/postcss-plugin-add-encapsulation-selector
+npm install -D madogiwa0124/vite-plugin-rollbar-sourcemap
 ```
 
 ## Usage
