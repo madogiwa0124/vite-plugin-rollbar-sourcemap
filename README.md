@@ -2,7 +2,7 @@
 
 This is a Vite plugin for uploading Vite-generated Sourcemaps to Rolbar.
 
-This plugin is inspired by [clinggroup/vite-plugin-rollbar](https://github.com/clinggroup/vite-plugin-rollbar).
+This plugin is inspired by the work of clinggroup on the original [vite-plugin-rollbar](https://github.com/clinggroup/vite-plugin-rollbar). I appreciate their contributions to the Vite ecosystem.
 
 ## Motivation
 
