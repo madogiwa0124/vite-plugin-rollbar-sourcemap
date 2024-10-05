@@ -1,0 +1,14 @@
+.github/
+.vscode/
+node_modules/
+test/
+
+.asdfrc
+.gitignore
+.node-version
+.npmignore
+biome.json
+pnpm-lock.yaml
+rullup.config.js
+tsconfig.json
+vitest.config.ts
