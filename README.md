@@ -13,7 +13,7 @@ This plugin is inspired by the work of clinggroup on the original [vite-plugin-r
 ## Installation
 
 ```sh
-npm install -D madogiwa0124/vite-plugin-rollbar-sourcemap
+npm install -D vite-plugin-rollbar-sourcemap
 ```
 
 ## Usage
