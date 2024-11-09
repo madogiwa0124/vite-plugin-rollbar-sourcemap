@@ -3,11 +3,17 @@
   "description": "This is a Vite plugin for uploading Vite-generated Sourcemaps to Rolbar.",
   "author": "madogiwa0124 <madogiwa0124@gmail.com>",
   "repository": "madogiwa0124/vite-plugin-rollbar-sourcemap",
-  "keywords": ["rollbar", "sourcemap", "vite-plugin"],
+  "keywords": [
+    "rollbar",
+    "sourcemap",
+    "vite-plugin"
+  ],
   "license": "MIT",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "dist/index.umd.cjs",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
