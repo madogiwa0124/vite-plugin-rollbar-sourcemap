@@ -85,21 +85,6 @@ const postRollbarSourcemap = (body) => __awaiter(void 0, void 0, void 0, functio
     const res = yield fetch(ROLLBAR_ENDPOINT, { method: "POST", body });
     return res;
 });
-if (undefined) {
-    const { describe, it, expect, vi } = undefined;
-    describe("postRollbarSourcemap", () => {
-        it("should post sourcemap to Rollbar", () => __awaiter(void 0, void 0, void 0, function* () {
-            vi.spyOn(global, "fetch").mockImplementation(() => __awaiter(void 0, void 0, void 0, function* () { return new Response('{ "key": "value" }', { status: 200 }); }));
-            const form = new FormData();
-            const res = yield postRollbarSourcemap(form);
-            expect(global.fetch).toBeCalledWith(ROLLBAR_ENDPOINT, {
-                method: "POST",
-                body: form,
-            });
-            expect(res.ok).toBe(true);
-        }));
-    });
-}
 
 const uploadAllSourceMaps = (sourceMappings, accessToken, version, baseUrl) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -156,30 +141,6 @@ const calcSourceFile = ({ sourceMapFile, outputDir, }) => {
 const readSourceMapFile = (sourceMapPath) => {
     return node_fs.readFileSync(sourceMapPath, "utf8");
 };
-if (undefined) {
-    const { describe, it, expect } = undefined;
-    describe("collectSourceMapFiles", () => {
-        it("should collect source map files", () => __awaiter(void 0, void 0, void 0, function* () {
-            const result = yield collectSourceMapFiles("**/*.map", "test/sample");
-            expect(result).toEqual(["foo.js.map", "bar.js.map"]);
-        }));
-    });
-    describe("resolveSourceMap", () => {
-        it("should resolve source map file path", () => {
-            const result = resolveSourceMapFile("test/sample", "foo.js.map");
-            expect(result).toBe(node_path.resolve("test/sample/foo.js.map"));
-        });
-    });
-    describe("calcSourcePath", () => {
-        it("should calculate source path", () => {
-            const result = calcSourceFile({
-                sourceMapFile: "foo.js.map",
-                outputDir: "test/sample",
-            });
-            expect(result).toBe("foo.js");
-        });
-    });
-}
 
 const SOURCE_MAP_GLOB = "./**/*.map";
 const collectSourceMappings = (base_1, outputDir_1, ...args_1) => __awaiter(void 0, [base_1, outputDir_1, ...args_1], void 0, function* (base, outputDir, sourceMapGlob = SOURCE_MAP_GLOB) {
