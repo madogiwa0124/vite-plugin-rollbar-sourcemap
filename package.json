@@ -5,7 +5,7 @@
   "repository": "madogiwa0124/vite-plugin-rollbar-sourcemap",
   "keywords": ["rollbar", "sourcemap", "vite-plugin"],
   "license": "MIT",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "files": ["dist"],
   "main": "dist/index.umd.cjs",
