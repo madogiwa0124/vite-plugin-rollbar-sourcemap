@@ -10,14 +10,14 @@ describe("collectSourceMappings", () => {
     const result = await collectSourceMappings("https://example.com/", "test/sample/");
     expect(result).toEqual([
       {
-        originalFileUrl: "https://example.com/foo.js",
-        sourceMapContent: "// source map for foo.js\n",
-        sourceMapFilePath: resolve("test/sample/foo.js.map"),
-      },
-      {
         originalFileUrl: "https://example.com/bar.js",
         sourceMapContent: "// source map for bar.js\n",
         sourceMapFilePath: resolve("test/sample/bar.js.map"),
+      },
+      {
+        originalFileUrl: "https://example.com/foo.js",
+        sourceMapContent: "// source map for foo.js\n",
+        sourceMapFilePath: resolve("test/sample/foo.js.map"),
       },
     ]);
   });

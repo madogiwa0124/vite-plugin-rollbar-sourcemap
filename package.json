@@ -43,9 +43,6 @@
     "vite": "^5.4.11",
     "vitest": "^2.1.8"
   },
-  "dependencies": {
-    "glob": "^11.0.0"
-  },
   "peerDependencies": {
     "vite": "^5.0.0"
   },

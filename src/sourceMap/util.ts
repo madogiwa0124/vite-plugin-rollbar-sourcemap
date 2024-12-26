@@ -1,12 +1,8 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, globSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { glob } from "glob";
 
-export const collectSourceMapFiles = async (
-  souceMapGlob: string,
-  outputDir: string,
-): Promise<string[]> => {
-  return await glob(souceMapGlob, { cwd: outputDir });
+export const collectSourceMapFiles = (souceMapGlob: string, outputDir: string): string[] => {
+  return globSync(souceMapGlob, { cwd: outputDir });
 };
 
 export const resolveSourceMapFile = (outputDir: string, sourceMapFile: string): string => {
@@ -34,9 +30,9 @@ if (import.meta.vitest) {
   const { describe, it, expect } = import.meta.vitest;
 
   describe("collectSourceMapFiles", () => {
-    it("should collect source map files", async () => {
-      const result = await collectSourceMapFiles("**/*.map", "test/sample");
-      expect(result).toEqual(["foo.js.map", "bar.js.map"]);
+    it("should collect source map files", () => {
+      const result = collectSourceMapFiles("**/*.map", "test/sample");
+      expect(result).toEqual(["bar.js.map", "foo.js.map"]);
     });
   });
 

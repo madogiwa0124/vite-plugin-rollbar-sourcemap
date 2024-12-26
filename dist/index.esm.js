@@ -1,6 +1,5 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { globSync, existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { glob } from 'glob';
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -123,9 +122,9 @@ const buildPostFormData = ({ accessToken, version, minifiedUrl, sourceMapContent
     return form;
 };
 
-const collectSourceMapFiles = (souceMapGlob, outputDir) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield glob(souceMapGlob, { cwd: outputDir });
-});
+const collectSourceMapFiles = (souceMapGlob, outputDir) => {
+    return globSync(souceMapGlob, { cwd: outputDir });
+};
 const resolveSourceMapFile = (outputDir, sourceMapFile) => {
     return resolve(outputDir, sourceMapFile);
 };
@@ -142,7 +141,7 @@ const readSourceMapFile = (sourceMapPath) => {
 
 const SOURCE_MAP_GLOB = "./**/*.map";
 const collectSourceMappings = (base_1, outputDir_1, ...args_1) => __awaiter(void 0, [base_1, outputDir_1, ...args_1], void 0, function* (base, outputDir, sourceMapGlob = SOURCE_MAP_GLOB) {
-    const sourceMapFiles = yield collectSourceMapFiles(sourceMapGlob, outputDir);
+    const sourceMapFiles = collectSourceMapFiles(sourceMapGlob, outputDir);
     const sourceMappings = sourceMapFiles.map((sourceMapFile) => {
         const sourcePath = calcSourceFile({ sourceMapFile, outputDir });
         if (sourcePath === null)

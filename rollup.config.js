@@ -1,7 +1,6 @@
 import commonjs from "@rollup/plugin-commonjs";
 import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
-import autoExternal from "rollup-plugin-auto-external";
 import { dts } from "rollup-plugin-dts";
 
 export default [
@@ -26,7 +25,6 @@ export default [
         "import.meta.vitest": "undefined",
       }),
       typescript(),
-      autoExternal(),
       commonjs(),
     ],
   },

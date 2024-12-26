@@ -18,7 +18,7 @@ export const collectSourceMappings = async (
   outputDir: string,
   sourceMapGlob = SOURCE_MAP_GLOB,
 ): Promise<SourceMapping[]> => {
-  const sourceMapFiles = await collectSourceMapFiles(sourceMapGlob, outputDir);
+  const sourceMapFiles = collectSourceMapFiles(sourceMapGlob, outputDir);
   const sourceMappings = sourceMapFiles.map((sourceMapFile) => {
     const sourcePath = calcSourceFile({ sourceMapFile, outputDir });
     if (sourcePath === null) return state.logger.error(`No source found for '${sourceMapFile}'.`);
