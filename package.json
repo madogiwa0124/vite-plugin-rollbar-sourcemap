@@ -29,7 +29,6 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.2",
     "@rollup/plugin-commonjs": "^28.0.2",
-    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-typescript": "^12.1.2",
     "@tsconfig/recommended": "^1.0.8",
