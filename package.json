@@ -34,7 +34,7 @@
     "@tsconfig/recommended": "^1.0.8",
     "@types/node": "^22.10.2",
     "@vitest/coverage-v8": "^2.1.8",
-    "rollup": "^4.28.1",
+    "rollup": "^4.29.1",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-dts": "^6.1.1",
     "tslib": "^2.8.1",
@@ -45,5 +45,5 @@
   "peerDependencies": {
     "vite": "^5.0.0"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.1"
 }
