@@ -11,4 +11,5 @@ type RollbarSourcemapsOptions = {
 };
 declare function vitePluginRollbarSourceMap({ accessToken, version, baseUrl, silent, ignoreUploadErrors, base, outputDir, }: RollbarSourcemapsOptions): Plugin;
 
-export { type RollbarSourcemapsOptions, vitePluginRollbarSourceMap as default };
+export { vitePluginRollbarSourceMap as default };
+export type { RollbarSourcemapsOptions };
