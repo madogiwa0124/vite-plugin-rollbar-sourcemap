@@ -6,6 +6,7 @@ import { dts } from "rollup-plugin-dts";
 export default [
   {
     input: "src/index.ts",
+    external: ["node:fs", "node:path"],
     output: [
       {
         format: "es",
@@ -23,6 +24,7 @@ export default [
     plugins: [
       replace({
         "import.meta.vitest": "undefined",
+        preventAssignment: true,
       }),
       typescript(),
       commonjs(),
