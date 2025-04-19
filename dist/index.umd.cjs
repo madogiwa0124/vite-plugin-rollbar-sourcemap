@@ -1,184 +1,192 @@
-'use strict';
-
-var node_fs = require('node:fs');
-var node_path = require('node:path');
-
-/******************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
-
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-    var e = new Error(message);
-    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+"use strict";
+//#region rolldown:runtime
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __copyProps = (to, from, except, desc) => {
+	if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
+		key = keys[i];
+		if (!__hasOwnProp.call(to, key) && key !== except) __defProp(to, key, {
+			get: ((k) => from[k]).bind(null, key),
+			enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+		});
+	}
+	return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", {
+	value: mod,
+	enumerable: true
+}) : target, mod));
 
-class Logger {
-    constructor(silent, ignoreUploadErrors) {
-        this.silent = silent;
-        this.ignoreUploadErrors = ignoreUploadErrors;
-    }
-    info(message) {
-        if (!this.silent)
-            console.log(message);
-        return null;
-    }
-    error(message, error = null) {
-        if (!this.silent)
-            console.error(message);
-        if (error && !this.ignoreUploadErrors)
-            throw error;
-        return null;
-    }
-}
+//#endregion
+const node_fs = __toESM(require("node:fs"));
+const node_path = __toESM(require("node:path"));
+
+//#region src/logger.ts
+var Logger = class {
+	silent;
+	ignoreUploadErrors;
+	constructor(silent, ignoreUploadErrors) {
+		this.silent = silent;
+		this.ignoreUploadErrors = ignoreUploadErrors;
+	}
+	info(message) {
+		if (!this.silent) console.log(message);
+		return null;
+	}
+	error(message, error = null) {
+		if (!this.silent) console.error(message);
+		if (error && !this.ignoreUploadErrors) throw error;
+		return null;
+	}
+};
 const buildLogger = (silent, ignoreUploadErrors) => {
-    return new Logger(silent, ignoreUploadErrors);
+	return new Logger(silent, ignoreUploadErrors);
 };
 
-const state = {
-    logger: new Logger(false, true),
-};
+//#endregion
+//#region src/state.ts
+const state = { logger: new Logger(false, true) };
 const setLogger = (value) => {
-    state.logger = value;
+	state.logger = value;
 };
 
-class FailedUploadError extends Error {
-    constructor(message, filename) {
-        super(message);
-        this.message = `Failed to upload ${filename} to Rollbar: ${message}.`;
-        this.name = "FailedUploadError";
-    }
-}
-class FailedPostError extends Error {
-    constructor(message, statusText) {
-        super(message);
-        this.message = `Failed to post sourcemap to Rollbar with ${statusText}: ${message}.`;
-        this.name = "FaildPostError";
-    }
-}
+//#endregion
+//#region src/rollbar/errors.ts
+var FailedUploadError = class extends Error {
+	constructor(message, filename) {
+		super(message);
+		this.message = `Failed to upload ${filename} to Rollbar: ${message}.`;
+		this.name = "FailedUploadError";
+	}
+};
+var FailedPostError = class extends Error {
+	constructor(message, statusText) {
+		super(message);
+		this.message = `Failed to post sourcemap to Rollbar with ${statusText}: ${message}.`;
+		this.name = "FaildPostError";
+	}
+};
 
+//#endregion
+//#region src/rollbar/service.ts
 const ROLLBAR_ENDPOINT = "https://api.rollbar.com/api/1/sourcemap";
-const postRollbarSourcemap = (body) => __awaiter(void 0, void 0, void 0, function* () {
-    const res = yield fetch(ROLLBAR_ENDPOINT, { method: "POST", body });
-    return res;
-});
-
-const uploadAllSourceMaps = (sourceMappings, accessToken, version, baseUrl) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield Promise.all(sourceMappings.map((mapping) => {
-            const { sourceMapContent, sourceMapFilePath, originalFileUrl } = mapping;
-            const minifiedUrl = `${baseUrl}${originalFileUrl}`;
-            const form = buildPostFormData({
-                accessToken,
-                version,
-                minifiedUrl,
-                sourceMapContent,
-                sourceMapFilePath,
-            });
-            return uploadSourcemap(form, originalFileUrl);
-        }));
-    }
-    catch (error) {
-        state.logger.error(`Failed to upload sourcemap: ${error}.`, error);
-    }
-});
-const uploadSourcemap = (form, fileName) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const res = yield postRollbarSourcemap(form);
-        if (!res.ok)
-            throw new FailedPostError(yield res.text(), res.statusText);
-        state.logger.info(`Uploaded ${fileName} to Rollbar.`);
-    }
-    catch (error) {
-        throw new FailedUploadError(error.message, fileName);
-    }
-});
-const buildPostFormData = ({ accessToken, version, minifiedUrl, sourceMapContent, sourceMapFilePath, }) => {
-    const form = new FormData();
-    form.set("access_token", accessToken);
-    form.set("version", version);
-    form.set("minified_url", minifiedUrl);
-    form.set("source_map", new Blob([sourceMapContent]), sourceMapFilePath);
-    return form;
+const postRollbarSourcemap = async (body) => {
+	const res = await fetch(ROLLBAR_ENDPOINT, {
+		method: "POST",
+		body
+	});
+	return res;
 };
 
+//#endregion
+//#region src/rollbar/client.ts
+const uploadAllSourceMaps = async (sourceMappings, accessToken, version, baseUrl) => {
+	try {
+		await Promise.all(sourceMappings.map((mapping) => {
+			const { sourceMapContent, sourceMapFilePath, originalFileUrl } = mapping;
+			const minifiedUrl = `${baseUrl}${originalFileUrl}`;
+			const form = buildPostFormData({
+				accessToken,
+				version,
+				minifiedUrl,
+				sourceMapContent,
+				sourceMapFilePath
+			});
+			return uploadSourcemap(form, originalFileUrl);
+		}));
+	} catch (error) {
+		state.logger.error(`Failed to upload sourcemap: ${error}.`, error);
+	}
+};
+const uploadSourcemap = async (form, fileName) => {
+	try {
+		const res = await postRollbarSourcemap(form);
+		if (!res.ok) throw new FailedPostError(await res.text(), res.statusText);
+		state.logger.info(`Uploaded ${fileName} to Rollbar.`);
+	} catch (error) {
+		throw new FailedUploadError(error.message, fileName);
+	}
+};
+const buildPostFormData = ({ accessToken, version, minifiedUrl, sourceMapContent, sourceMapFilePath }) => {
+	const form = new FormData();
+	form.set("access_token", accessToken);
+	form.set("version", version);
+	form.set("minified_url", minifiedUrl);
+	form.set("source_map", new Blob([sourceMapContent]), sourceMapFilePath);
+	return form;
+};
+
+//#endregion
+//#region src/sourceMap/util.ts
 const collectSourceMapFiles = (souceMapGlob, outputDir) => {
-    return node_fs.globSync(souceMapGlob, { cwd: outputDir });
+	return (0, node_fs.globSync)(souceMapGlob, { cwd: outputDir });
 };
 const resolveSourceMapFile = (outputDir, sourceMapFile) => {
-    return node_path.resolve(outputDir, sourceMapFile);
+	return (0, node_path.resolve)(outputDir, sourceMapFile);
 };
-const calcSourceFile = ({ sourceMapFile, outputDir, }) => {
-    const sourceFile = sourceMapFile.replace(/\.map$/, "");
-    const sourcePath = node_path.resolve(outputDir, sourceFile);
-    if (!node_fs.existsSync(sourcePath))
-        return null;
-    return sourceFile;
+const calcSourceFile = ({ sourceMapFile, outputDir }) => {
+	const sourceFile = sourceMapFile.replace(/\.map$/, "");
+	const sourcePath = (0, node_path.resolve)(outputDir, sourceFile);
+	if (!(0, node_fs.existsSync)(sourcePath)) return null;
+	return sourceFile;
 };
 const readSourceMapFile = (sourceMapPath) => {
-    return node_fs.readFileSync(sourceMapPath, "utf8");
+	return (0, node_fs.readFileSync)(sourceMapPath, "utf8");
 };
 
+//#endregion
+//#region src/sourceMap/index.ts
 const SOURCE_MAP_GLOB = "./**/*.map";
-const collectSourceMappings = (base_1, outputDir_1, ...args_1) => __awaiter(void 0, [base_1, outputDir_1, ...args_1], void 0, function* (base, outputDir, sourceMapGlob = SOURCE_MAP_GLOB) {
-    const sourceMapFiles = collectSourceMapFiles(sourceMapGlob, outputDir);
-    const sourceMappings = sourceMapFiles.map((sourceMapFile) => {
-        const sourcePath = calcSourceFile({ sourceMapFile, outputDir });
-        if (sourcePath === null)
-            return state.logger.error(`No source found for '${sourceMapFile}'.`);
-        const sourceMapFilePath = resolveSourceMapFile(outputDir, sourceMapFile);
-        return buildSourceMapping({ base, sourcePath, sourceMapFilePath });
-    });
-    return sourceMappings.filter((mapping) => mapping !== null);
-});
-const buildSourceMapping = ({ base, sourcePath, sourceMapFilePath, }) => {
-    const originalFileUrl = `${base}${sourcePath}`;
-    try {
-        const sourceMapContent = readSourceMapFile(sourceMapFilePath);
-        return { sourceMapContent, sourceMapFilePath, originalFileUrl };
-    }
-    catch (_error) {
-        state.logger.error(`Error reading sourcemap file: ${sourceMapFilePath}`);
-        return null;
-    }
+const collectSourceMappings = async (base, outputDir, sourceMapGlob = SOURCE_MAP_GLOB) => {
+	const sourceMapFiles = collectSourceMapFiles(sourceMapGlob, outputDir);
+	const sourceMappings = sourceMapFiles.map((sourceMapFile) => {
+		const sourcePath = calcSourceFile({
+			sourceMapFile,
+			outputDir
+		});
+		if (sourcePath === null) return state.logger.error(`No source found for '${sourceMapFile}'.`);
+		const sourceMapFilePath = resolveSourceMapFile(outputDir, sourceMapFile);
+		return buildSourceMapping({
+			base,
+			sourcePath,
+			sourceMapFilePath
+		});
+	});
+	return sourceMappings.filter((mapping) => mapping !== null);
+};
+const buildSourceMapping = ({ base, sourcePath, sourceMapFilePath }) => {
+	const originalFileUrl = `${base}${sourcePath}`;
+	try {
+		const sourceMapContent = readSourceMapFile(sourceMapFilePath);
+		return {
+			sourceMapContent,
+			sourceMapFilePath,
+			originalFileUrl
+		};
+	} catch (_error) {
+		state.logger.error(`Error reading sourcemap file: ${sourceMapFilePath}`);
+		return null;
+	}
 };
 
-function vitePluginRollbarSourceMap({ accessToken, version, baseUrl, silent = false, ignoreUploadErrors = true, base = "/", outputDir = "dist", }) {
-    return {
-        name: "vite-plugin-rollbar-sourcemap",
-        writeBundle() {
-            return __awaiter(this, void 0, void 0, function* () {
-                setLogger(buildLogger(silent, ignoreUploadErrors));
-                const sourceMappings = yield collectSourceMappings(base, outputDir);
-                if (!sourceMappings.length)
-                    return;
-                yield uploadAllSourceMaps(sourceMappings, accessToken, version, baseUrl);
-            });
-        },
-    };
+//#endregion
+//#region src/index.ts
+function vitePluginRollbarSourceMap({ accessToken, version, baseUrl, silent = false, ignoreUploadErrors = true, base = "/", outputDir = "dist" }) {
+	return {
+		name: "vite-plugin-rollbar-sourcemap",
+		async writeBundle() {
+			setLogger(buildLogger(silent, ignoreUploadErrors));
+			const sourceMappings = await collectSourceMappings(base, outputDir);
+			if (!sourceMappings.length) return;
+			await uploadAllSourceMaps(sourceMappings, accessToken, version, baseUrl);
+		}
+	};
 }
 
+//#endregion
 module.exports = vitePluginRollbarSourceMap;
 //# sourceMappingURL=index.umd.cjs.map

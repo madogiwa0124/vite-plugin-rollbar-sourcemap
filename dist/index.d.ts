@@ -1,5 +1,6 @@
-import { Plugin } from 'vite';
+import { Plugin } from "vite";
 
+//#region src/index.d.ts
 type RollbarSourcemapsOptions = {
     accessToken: string;
     version: string;
@@ -11,5 +12,5 @@ type RollbarSourcemapsOptions = {
 };
 declare function vitePluginRollbarSourceMap({ accessToken, version, baseUrl, silent, ignoreUploadErrors, base, outputDir, }: RollbarSourcemapsOptions): Plugin;
 
-export { vitePluginRollbarSourceMap as default };
-export type { RollbarSourcemapsOptions };
+//#endregion
+export { RollbarSourcemapsOptions, vitePluginRollbarSourceMap as default };
