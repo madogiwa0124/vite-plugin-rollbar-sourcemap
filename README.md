@@ -20,7 +20,7 @@ npm install -D vite-plugin-rollbar-sourcemap
 
 ```js
 // vite.config.ts
-import viteRollbar from "vite-plugin-rollbar-sourcemaop";
+import viteRollbar from "vite-plugin-rollbar-sourcemap";
 
 const rollbarConfig = {
   accessToken: "<ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN>",
