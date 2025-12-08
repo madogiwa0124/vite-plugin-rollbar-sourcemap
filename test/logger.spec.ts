@@ -1,4 +1,4 @@
-import { Logger, buildLogger } from "../src/logger";
+import { buildLogger, Logger } from "../src/logger";
 
 describe("Logger", () => {
   const consoleSpyLog = vi.spyOn(console, "log").mockImplementation(() => {});
