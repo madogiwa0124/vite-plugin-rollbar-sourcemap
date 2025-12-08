@@ -5,8 +5,10 @@ export default defineConfig([
   {
     input: "src/index.ts",
     external: ["node:fs", "node:path"],
-    define: {
-      "import.meta.vitest": "undefined",
+    transform: {
+      define: {
+        "import.meta.vitest": "undefined",
+      },
     },
     output: [
       {
