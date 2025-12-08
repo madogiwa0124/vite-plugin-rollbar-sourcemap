@@ -1,29 +1,5 @@
-"use strict";
-//#region rolldown:runtime
-var __create = Object.create;
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __copyProps = (to, from, except, desc) => {
-	if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
-		key = keys[i];
-		if (!__hasOwnProp.call(to, key) && key !== except) __defProp(to, key, {
-			get: ((k) => from[k]).bind(null, key),
-			enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
-		});
-	}
-	return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", {
-	value: mod,
-	enumerable: true
-}) : target, mod));
-
-//#endregion
-const node_fs = __toESM(require("node:fs"));
-const node_path = __toESM(require("node:path"));
+let node_fs = require("node:fs");
+let node_path = require("node:path");
 
 //#region src/logger.ts
 var Logger = class {
@@ -75,11 +51,10 @@ var FailedPostError = class extends Error {
 //#region src/rollbar/service.ts
 const ROLLBAR_ENDPOINT = "https://api.rollbar.com/api/1/sourcemap";
 const postRollbarSourcemap = async (body) => {
-	const res = await fetch(ROLLBAR_ENDPOINT, {
+	return await fetch(ROLLBAR_ENDPOINT, {
 		method: "POST",
 		body
 	});
-	return res;
 };
 
 //#endregion
@@ -88,15 +63,13 @@ const uploadAllSourceMaps = async (sourceMappings, accessToken, version, baseUrl
 	try {
 		await Promise.all(sourceMappings.map((mapping) => {
 			const { sourceMapContent, sourceMapFilePath, originalFileUrl } = mapping;
-			const minifiedUrl = `${baseUrl}${originalFileUrl}`;
-			const form = buildPostFormData({
+			return uploadSourcemap(buildPostFormData({
 				accessToken,
 				version,
-				minifiedUrl,
+				minifiedUrl: `${baseUrl}${originalFileUrl}`,
 				sourceMapContent,
 				sourceMapFilePath
-			});
-			return uploadSourcemap(form, originalFileUrl);
+			}), originalFileUrl);
 		}));
 	} catch (error) {
 		state.logger.error(`Failed to upload sourcemap: ${error}.`, error);
@@ -130,8 +103,7 @@ const resolveSourceMapFile = (outputDir, sourceMapFile) => {
 };
 const calcSourceFile = ({ sourceMapFile, outputDir }) => {
 	const sourceFile = sourceMapFile.replace(/\.map$/, "");
-	const sourcePath = (0, node_path.resolve)(outputDir, sourceFile);
-	if (!(0, node_fs.existsSync)(sourcePath)) return null;
+	if (!(0, node_fs.existsSync)((0, node_path.resolve)(outputDir, sourceFile))) return null;
 	return sourceFile;
 };
 const readSourceMapFile = (sourceMapPath) => {
@@ -142,28 +114,24 @@ const readSourceMapFile = (sourceMapPath) => {
 //#region src/sourceMap/index.ts
 const SOURCE_MAP_GLOB = "./**/*.map";
 const collectSourceMappings = async (base, outputDir, sourceMapGlob = SOURCE_MAP_GLOB) => {
-	const sourceMapFiles = collectSourceMapFiles(sourceMapGlob, outputDir);
-	const sourceMappings = sourceMapFiles.map((sourceMapFile) => {
+	return collectSourceMapFiles(sourceMapGlob, outputDir).map((sourceMapFile) => {
 		const sourcePath = calcSourceFile({
 			sourceMapFile,
 			outputDir
 		});
 		if (sourcePath === null) return state.logger.error(`No source found for '${sourceMapFile}'.`);
-		const sourceMapFilePath = resolveSourceMapFile(outputDir, sourceMapFile);
 		return buildSourceMapping({
 			base,
 			sourcePath,
-			sourceMapFilePath
+			sourceMapFilePath: resolveSourceMapFile(outputDir, sourceMapFile)
 		});
-	});
-	return sourceMappings.filter((mapping) => mapping !== null);
+	}).filter((mapping) => mapping !== null);
 };
 const buildSourceMapping = ({ base, sourcePath, sourceMapFilePath }) => {
 	const originalFileUrl = `${base}${sourcePath}`;
 	try {
-		const sourceMapContent = readSourceMapFile(sourceMapFilePath);
 		return {
-			sourceMapContent,
+			sourceMapContent: readSourceMapFile(sourceMapFilePath),
 			sourceMapFilePath,
 			originalFileUrl
 		};
