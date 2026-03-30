@@ -27,7 +27,7 @@ export default defineConfig([
   },
   {
     input: "src/index.ts",
-    external: ["node:fs", "node:path"],
+    external: ["node:fs", "node:path", "vite"],
     output: [{ format: "es", dir: "dist" }],
     plugins: [dts({ emitDtsOnly: true })],
   },
