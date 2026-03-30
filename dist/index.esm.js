@@ -1,10 +1,7 @@
 import { existsSync, globSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-
 //#region src/logger.ts
 var Logger = class {
-	silent;
-	ignoreUploadErrors;
 	constructor(silent, ignoreUploadErrors) {
 		this.silent = silent;
 		this.ignoreUploadErrors = ignoreUploadErrors;
@@ -22,14 +19,12 @@ var Logger = class {
 const buildLogger = (silent, ignoreUploadErrors) => {
 	return new Logger(silent, ignoreUploadErrors);
 };
-
 //#endregion
 //#region src/state.ts
 const state = { logger: new Logger(false, true) };
 const setLogger = (value) => {
 	state.logger = value;
 };
-
 //#endregion
 //#region src/rollbar/errors.ts
 var FailedUploadError = class extends Error {
@@ -46,7 +41,6 @@ var FailedPostError = class extends Error {
 		this.name = "FaildPostError";
 	}
 };
-
 //#endregion
 //#region src/rollbar/service.ts
 const ROLLBAR_ENDPOINT = "https://api.rollbar.com/api/1/sourcemap";
@@ -56,7 +50,6 @@ const postRollbarSourcemap = async (body) => {
 		body
 	});
 };
-
 //#endregion
 //#region src/rollbar/client.ts
 const uploadAllSourceMaps = async (sourceMappings, accessToken, version, baseUrl) => {
@@ -92,7 +85,6 @@ const buildPostFormData = ({ accessToken, version, minifiedUrl, sourceMapContent
 	form.set("source_map", new Blob([sourceMapContent]), sourceMapFilePath);
 	return form;
 };
-
 //#endregion
 //#region src/sourceMap/util.ts
 const collectSourceMapFiles = (souceMapGlob, outputDir) => {
@@ -109,7 +101,6 @@ const calcSourceFile = ({ sourceMapFile, outputDir }) => {
 const readSourceMapFile = (sourceMapPath) => {
 	return readFileSync(sourceMapPath, "utf8");
 };
-
 //#endregion
 //#region src/sourceMap/index.ts
 const SOURCE_MAP_GLOB = "./**/*.map";
@@ -140,7 +131,6 @@ const buildSourceMapping = ({ base, sourcePath, sourceMapFilePath }) => {
 		return null;
 	}
 };
-
 //#endregion
 //#region src/index.ts
 function vitePluginRollbarSourceMap({ accessToken, version, baseUrl, silent = false, ignoreUploadErrors = true, base = "/", outputDir = "dist" }) {
@@ -154,7 +144,7 @@ function vitePluginRollbarSourceMap({ accessToken, version, baseUrl, silent = fa
 		}
 	};
 }
-
 //#endregion
 export { vitePluginRollbarSourceMap as default };
+
 //# sourceMappingURL=index.esm.js.map
