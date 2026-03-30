@@ -1,0 +1,68 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "grep -qE '\"file_path\":\"[^\"]*\\.ts\"' && pnpm lint && pnpm test 2>/dev/null || true",
+            "statusMessage": "Linting & testing...",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Edit(**)",
+      "Write(**)",
+      "Bash(**)",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__fill_form",
+      "mcp__chrome-devtools__fill",
+      "WebFetch(domain:github.com)",
+      "mcp__github__pull_request_read",
+      "mcp__github__search_repositories",
+      "mcp__github__issue_read"
+    ],
+    "deny": [
+      "Edit(**/.vscode/*.json)",
+      "Write(**/.vscode/*.json)",
+      "Edit(**/.git/**)",
+      "Write(**/.git/**)",
+      "Edit(**/package.json)",
+      "Write(**/package.json)",
+      "Edit(**/package-lock.json)",
+      "Write(**/package-lock.json)",
+      "Read(**/.env)",
+      "Edit(**/.env)",
+      "Write(**/.env)",
+      "Read(**/.*.key)",
+      "Edit(**/.*.key)",
+      "Write(**/.*.key)",
+      "Edit(**/.gitattributes)",
+      "Write(**/.gitattributes)",
+      "Edit(**/web.config)",
+      "Write(**/web.config)",
+      "Bash(rm:*)",
+      "Bash(rmdir:*)",
+      "Bash(kill:*)",
+      "Bash(ps:*)",
+      "Bash(top:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
+      "Bash(eval:*)",
+      "Bash(xargs:*)",
+      "Bash(jq:*)",
+      "Bash(printenv:*)"
+    ]
+  }
+}

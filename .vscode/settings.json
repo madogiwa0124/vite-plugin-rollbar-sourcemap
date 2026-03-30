@@ -1,4 +1,9 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "biomejs.biome"
+  "editor.defaultFormatter": "biomejs.biome",
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".claude/skills/commit-message/SKILL.md"
+    }
+  ]
 }
