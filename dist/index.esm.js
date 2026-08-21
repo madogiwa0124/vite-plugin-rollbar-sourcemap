@@ -56,13 +56,15 @@ const uploadAllSourceMaps = async (sourceMappings, accessToken, version, baseUrl
 	try {
 		await Promise.all(sourceMappings.map((mapping) => {
 			const { sourceMapContent, sourceMapFilePath, originalFileUrl } = mapping;
-			return uploadSourcemap(buildPostFormData({
+			const minifiedUrl = `${baseUrl}${originalFileUrl}`;
+			const form = buildPostFormData({
 				accessToken,
 				version,
-				minifiedUrl: `${baseUrl}${originalFileUrl}`,
+				minifiedUrl,
 				sourceMapContent,
 				sourceMapFilePath
-			}), originalFileUrl);
+			});
+			return uploadSourcemap(form, originalFileUrl);
 		}));
 	} catch (error) {
 		state.logger.error(`Failed to upload sourcemap: ${error}.`, error);
@@ -95,7 +97,8 @@ const resolveSourceMapFile = (outputDir, sourceMapFile) => {
 };
 const calcSourceFile = ({ sourceMapFile, outputDir }) => {
 	const sourceFile = sourceMapFile.replace(/\.map$/, "");
-	if (!existsSync(resolve(outputDir, sourceFile))) return null;
+	const sourcePath = resolve(outputDir, sourceFile);
+	if (!existsSync(sourcePath)) return null;
 	return sourceFile;
 };
 const readSourceMapFile = (sourceMapPath) => {
@@ -111,10 +114,11 @@ const collectSourceMappings = async (base, outputDir, sourceMapGlob = SOURCE_MAP
 			outputDir
 		});
 		if (sourcePath === null) return state.logger.error(`No source found for '${sourceMapFile}'.`);
+		const sourceMapFilePath = resolveSourceMapFile(outputDir, sourceMapFile);
 		return buildSourceMapping({
 			base,
 			sourcePath,
-			sourceMapFilePath: resolveSourceMapFile(outputDir, sourceMapFile)
+			sourceMapFilePath
 		});
 	}).filter((mapping) => mapping !== null);
 };
