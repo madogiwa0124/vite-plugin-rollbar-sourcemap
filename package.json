@@ -33,18 +33,18 @@
     "test": "vitest"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.9",
+    "@biomejs/biome": "2.6.3",
     "@tsconfig/recommended": "^1.0.13",
-    "@types/node": "^26.2.0",
-    "@vitest/coverage-v8": "^4.1.11",
-    "rolldown": "1.2.5",
-    "rolldown-plugin-dts": "^0.28.2",
-    "typescript": "^6.0.3",
-    "vite": "^8.2.2",
-    "vitest": "^4.1.11"
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-v8": "^5.0.5",
+    "rolldown": "1.2.15",
+    "rolldown-plugin-dts": "^0.28.8",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
   },
   "peerDependencies": {
     "vite": "^8.0.0"
   },
-  "packageManager": "pnpm@11.22.0"
+  "packageManager": "pnpm@12.15.0"
 }
